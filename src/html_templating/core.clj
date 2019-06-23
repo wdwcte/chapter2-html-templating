@@ -6,3 +6,22 @@
 ;;     (selmer/render template {:files []}))
 ;; => "no files"
 (filters/add-filter! :empty? empty?)
+
+;; By default, the ouput is escaped:
+;;
+;; (let [template {:input "<div>I'm not safe</div>"}]
+;;     (selmer/render "{{input|upper}}" template))
+;; => "&lt;DIV&gt;I&#39;M NOT SAFE&lt;/DIV&gt;"
+;;
+;; If we know the input is safe we can prevent escaping in our filter:
+;;
+;; (let [template {:input "<div>I'm safe</div>"}]
+;;     (selmer/render "{{input|unescaped-upper}}" template))
+;; => "<DIV>I'M SAFE</DIV>"
+(filters/add-filter! :unescaped-upper
+                     (fn [x] [:safe (.toUpperCase x)]))
+
+;; Weirdly this does not work, I'm not sure why because the :empy?
+;; filter is defined the same way. But I get:
+;; "unable to resolved symbol: .toUpperCse in this context"
+;; (filters/add-filter! :foo .toUpperCase)
