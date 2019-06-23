@@ -1,6 +1,7 @@
 (ns html-templating.core
   (:require [selmer.parser :as selmer]
-            [selmer.filters :as filters]))
+            [selmer.filters :as filters]
+            [selmer.middleware :refer [wrap-error-page]]))
 
 ;; (let [template "{% if files|empty? %}no files{% else %}files{% endif %}"]
 ;;     (selmer/render template {:files []}))
@@ -52,3 +53,16 @@
  (fn [args context-map content]
    (.toUpperCase (get-in content [:uppercase :content])))
  :enduppercase)
+
+;; `wrap-error-page` returns a *middleware* ie a function that: takes
+;; a handler as argument and returns returns another handler. A
+;; *handler* is a function that takes a request and returns a
+;; response.
+;;
+;; Thus, our renderer is a middleware: it takes a request and returns
+;; a response.
+(defn renderer []
+  (wrap-error-page
+   (fn [template]
+     {:status 200
+      :body (selmer/render-file template {})})))
