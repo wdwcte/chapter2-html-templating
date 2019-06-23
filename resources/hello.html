@@ -4,6 +4,11 @@
     <title>My First Template</title>
   </head>
   <body>
-    <h2>Hello {{name}}</h2>
+    <h2>Hello {{user.first}} {{user.last}}</h2>
+    <ul>
+      {% for item in items %}
+      <li>{{item}}</li>
+      {% endfor %}
+    </ul>
   </body>
 </html>
