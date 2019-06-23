@@ -43,3 +43,12 @@
  :image-with-src
  (fn [args context-map]
    (str "<img src=\"" (:src context-map) "\" />")))
+
+;; (selmer/render "{% uppercase %}foo {{bar}} baz{% enduppercase %}"
+;;                {:bar "injected"})
+;; => "FOO INJECTED BAZ"
+(selmer/add-tag!
+ :uppercase
+ (fn [args context-map content]
+   (.toUpperCase (get-in content [:uppercase :content])))
+ :enduppercase)
