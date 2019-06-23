@@ -25,3 +25,21 @@
 ;; filter is defined the same way. But I get:
 ;; "unable to resolved symbol: .toUpperCse in this context"
 ;; (filters/add-filter! :foo .toUpperCase)
+
+
+
+;; (let [template "{% image \"http://foo.com/logo.png\" %}"]
+;;   (selmer/render template {}))
+;; => "<img src=\"http://foo.com/logo.png\" />"
+(selmer/add-tag!
+ :image
+ (fn [args context-map]
+   (str "<img src=" (first args) "/>")))
+
+;; (let [template "{% image-with-src %}"]
+;;   (selmer/render template {:src "http://foo.com/logo.png"}))
+;; => "<img src=\"http://foo.com/logo.png\" />"
+(selmer/add-tag!
+ :image-with-src
+ (fn [args context-map]
+   (str "<img src=\"" (:src context-map) "\" />")))
